@@ -5,7 +5,7 @@ package routes
 import (
 	context "context"
 
-	condition "github.com/metal-toolbox/rivets/condition"
+	condition "github.com/metal-automata/rivets/condition"
 
 	mock "github.com/stretchr/testify/mock"
 

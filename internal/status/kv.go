@@ -8,12 +8,12 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/metal-toolbox/rivets/events"
-	"github.com/metal-toolbox/rivets/events/pkg/kv"
+	"github.com/metal-automata/rivets/events"
+	"github.com/metal-automata/rivets/events/pkg/kv"
 	"github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 var (

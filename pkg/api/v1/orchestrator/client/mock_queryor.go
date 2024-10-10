@@ -5,11 +5,11 @@ package client
 import (
 	context "context"
 
-	condition "github.com/metal-toolbox/rivets/condition"
+	condition "github.com/metal-automata/rivets/condition"
 
 	mock "github.com/stretchr/testify/mock"
 
-	types "github.com/metal-toolbox/conditionorc/pkg/api/v1/orchestrator/types"
+	types "github.com/metal-automata/conditionorc/pkg/api/v1/orchestrator/types"
 
 	uuid "github.com/google/uuid"
 )

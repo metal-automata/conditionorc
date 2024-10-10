@@ -9,11 +9,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/metrics"
-	"github.com/metal-toolbox/conditionorc/internal/status"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	"github.com/metal-toolbox/rivets/events/pkg/kv"
-	"github.com/metal-toolbox/rivets/events/registry"
+	"github.com/metal-automata/conditionorc/internal/metrics"
+	"github.com/metal-automata/conditionorc/internal/status"
+	"github.com/metal-automata/conditionorc/internal/store"
+	"github.com/metal-automata/rivets/events/pkg/kv"
+	"github.com/metal-automata/rivets/events/registry"
 	"github.com/nats-io/nats.go"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
@@ -21,8 +21,8 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/types"
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/conditions/types"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 var (

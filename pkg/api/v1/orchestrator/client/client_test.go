@@ -10,18 +10,18 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/fleetdb"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	"github.com/metal-toolbox/conditionorc/pkg/api/v1/orchestrator/routes"
+	"github.com/metal-automata/conditionorc/internal/fleetdb"
+	"github.com/metal-automata/conditionorc/internal/store"
+	"github.com/metal-automata/conditionorc/pkg/api/v1/orchestrator/routes"
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/orchestrator/types"
-	rctypes "github.com/metal-toolbox/rivets/condition"
-	eventsm "github.com/metal-toolbox/rivets/events"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/orchestrator/types"
+	rctypes "github.com/metal-automata/rivets/condition"
+	eventsm "github.com/metal-automata/rivets/events"
 )
 
 const (

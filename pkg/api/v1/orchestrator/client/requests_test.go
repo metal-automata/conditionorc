@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/orchestrator/types"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/orchestrator/types"
 	"github.com/stretchr/testify/assert"
 )
 

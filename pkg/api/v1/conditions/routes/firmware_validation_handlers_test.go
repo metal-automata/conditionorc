@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/model"
-	"github.com/metal-toolbox/conditionorc/internal/store"
+	"github.com/metal-automata/conditionorc/internal/model"
+	"github.com/metal-automata/conditionorc/internal/store"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"

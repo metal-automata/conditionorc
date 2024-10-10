@@ -13,13 +13,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/fleetdb"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/orchestrator/types"
+	"github.com/metal-automata/conditionorc/internal/fleetdb"
+	"github.com/metal-automata/conditionorc/internal/store"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/orchestrator/types"
 	"github.com/pkg/errors"
 
-	rctypes "github.com/metal-toolbox/rivets/condition"
-	eventsm "github.com/metal-toolbox/rivets/events"
+	rctypes "github.com/metal-automata/rivets/condition"
+	eventsm "github.com/metal-automata/rivets/events"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	mock "github.com/stretchr/testify/mock"

@@ -12,21 +12,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/fleetdb"
-	"github.com/metal-toolbox/conditionorc/internal/model"
-	"github.com/metal-toolbox/conditionorc/internal/server"
-	fleetdbapi "github.com/metal-toolbox/fleetdb/pkg/api/v1"
+	"github.com/metal-automata/conditionorc/internal/fleetdb"
+	"github.com/metal-automata/conditionorc/internal/model"
+	"github.com/metal-automata/conditionorc/internal/server"
+	fleetdbapi "github.com/metal-automata/fleetdb/pkg/api/v1"
 
-	"github.com/metal-toolbox/conditionorc/internal/store"
+	"github.com/metal-automata/conditionorc/internal/store"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/types"
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/types"
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	"github.com/metal-automata/conditionorc/pkg/api/v1/conditions/types"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/conditions/types"
+	rctypes "github.com/metal-automata/rivets/condition"
 
-	eventsm "github.com/metal-toolbox/rivets/events"
+	eventsm "github.com/metal-automata/rivets/events"
 )
 
 type integrationTester struct {

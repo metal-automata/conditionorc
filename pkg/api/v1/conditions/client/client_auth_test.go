@@ -7,7 +7,7 @@
 //
 // for example:
 // /usr/local/bin/go test -timeout 10s -run ^TestIntegration_ConditionsGet$ \
-//   -tags testtools github.com/metal-toolbox/conditionorc/pkg/api/v1/client -v
+//   -tags testtools github.com/metal-automata/conditionorc/pkg/api/v1/client -v
 
 package conditions
 
@@ -19,16 +19,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/server"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	"github.com/metal-toolbox/rivets/ginjwt"
+	"github.com/metal-automata/conditionorc/internal/server"
+	"github.com/metal-automata/conditionorc/internal/store"
+	"github.com/metal-automata/rivets/ginjwt"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/go-jose/go-jose.v2"
 	"gopkg.in/go-jose/go-jose.v2/jwt"
 
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/types"
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/conditions/types"
+	rctypes "github.com/metal-automata/rivets/condition"
 	"github.com/sirupsen/logrus"
 )
 

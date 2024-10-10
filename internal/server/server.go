@@ -4,22 +4,22 @@ import (
 	"net/http"
 	"time"
 
-	docs "github.com/metal-toolbox/conditionorc/docs"
+	docs "github.com/metal-automata/conditionorc/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/gin-gonic/gin"
-	"github.com/metal-toolbox/conditionorc/internal/fleetdb"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	condRoutes "github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/routes"
-	orcRoutes "github.com/metal-toolbox/conditionorc/pkg/api/v1/orchestrator/routes"
-	"github.com/metal-toolbox/rivets/events"
-	"github.com/metal-toolbox/rivets/ginauth"
-	"github.com/metal-toolbox/rivets/ginjwt"
+	"github.com/metal-automata/conditionorc/internal/fleetdb"
+	"github.com/metal-automata/conditionorc/internal/store"
+	condRoutes "github.com/metal-automata/conditionorc/pkg/api/v1/conditions/routes"
+	orcRoutes "github.com/metal-automata/conditionorc/pkg/api/v1/orchestrator/routes"
+	"github.com/metal-automata/rivets/events"
+	"github.com/metal-automata/rivets/ginauth"
+	"github.com/metal-automata/rivets/ginjwt"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 var (

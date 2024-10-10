@@ -32,7 +32,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/metal-toolbox/rivets/ginjwt"
+	"github.com/metal-automata/rivets/ginjwt"
 	"github.com/sirupsen/logrus"
 )
 

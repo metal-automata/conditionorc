@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/metal-toolbox/conditionorc/internal/version"
-	"github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/routes"
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/types"
+	"github.com/metal-automata/conditionorc/internal/version"
+	"github.com/metal-automata/conditionorc/pkg/api/v1/conditions/routes"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/conditions/types"
 )
 
 func (c *Client) get(ctx context.Context, path string) (*v1types.ServerResponse, error) {

@@ -8,16 +8,16 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/app"
-	"github.com/metal-toolbox/conditionorc/internal/metrics"
-	"github.com/metal-toolbox/conditionorc/internal/model"
+	"github.com/metal-automata/conditionorc/internal/app"
+	"github.com/metal-automata/conditionorc/internal/metrics"
+	"github.com/metal-automata/conditionorc/internal/model"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/otel"
 
-	fleetdbapi "github.com/metal-toolbox/fleetdb/pkg/api/v1"
-	rctypes "github.com/metal-toolbox/rivets/condition"
-	rfleetdbapi "github.com/metal-toolbox/rivets/fleetdb"
+	fleetdbapi "github.com/metal-automata/fleetdb/pkg/api/v1"
+	rctypes "github.com/metal-automata/rivets/condition"
+	rfleetdbapi "github.com/metal-automata/rivets/fleetdb"
 )
 
 const (

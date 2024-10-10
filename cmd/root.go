@@ -1,5 +1,6 @@
 /*
-Copyright © 2022 Metal toolbox authors <>
+Copyright © 2022-2024 Metal toolbox authors <>
+Copyright 2024 Metal Automata Authors https://github.com/metal-automata
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,8 +20,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/metal-toolbox/conditionorc/internal/version"
-	"github.com/metal-toolbox/rivets/ginjwt"
+	"github.com/metal-automata/conditionorc/internal/version"
+	"github.com/metal-automata/rivets/ginjwt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

@@ -11,7 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/rivets/ginjwt"
+	"github.com/metal-automata/rivets/ginjwt"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
@@ -19,11 +19,11 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/metal-toolbox/conditionorc/internal/metrics"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/types"
-	fleetdbapi "github.com/metal-toolbox/fleetdb/pkg/api/v1"
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	"github.com/metal-automata/conditionorc/internal/metrics"
+	"github.com/metal-automata/conditionorc/internal/store"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/conditions/types"
+	fleetdbapi "github.com/metal-automata/fleetdb/pkg/api/v1"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 const (
@@ -50,7 +50,7 @@ func (r *Routes) conditionKindValid(kind rctypes.Kind) bool {
 // @Summary Condition Create
 // @Tag Conditions
 // @Description Creates a condition on a server
-// @Description Sample firmwareInstall payload, response: https://github.com/metal-toolbox/conditionorc/blob/main/sample/firmwareInstall.md
+// @Description Sample firmwareInstall payload, response: https://github.com/metal-automata/conditionorc/blob/main/sample/firmwareInstall.md
 // @Param uuid path string true "Server ID"
 // @Param conditionKind path string true "Condition Kind"
 // @Accept json
@@ -127,7 +127,7 @@ func (r *Routes) serverConditionCreate(c *gin.Context) (int, *v1types.ServerResp
 // @Summary Server Delete
 // @Tag Servers
 // @Description Delete a server from FleetDB
-// @Description Sample server delete request and response: https://github.com/metal-toolbox/conditionorc/blob/main/sample/serverenroll.md
+// @Description Sample server delete request and response: https://github.com/metal-automata/conditionorc/blob/main/sample/serverenroll.md
 // @Param uuid path string true "Server ID"
 // @Success 200 {object} v1types.ServerResponse
 // Failure 400 {object} v1types.ServerResponse
@@ -186,7 +186,7 @@ func (r *Routes) serverDelete(c *gin.Context) (int, *v1types.ServerResponse) {
 // @Tag Servers
 // @Description Creates a server record in FleetDB and schedules an inventory condition on the device.
 // @Description It will create a new server ID if UUID is not provided.
-// @Description Sample server enroll request and response: https://github.com/metal-toolbox/conditionorc/blob/main/sample/serverenroll.md
+// @Description Sample server enroll request and response: https://github.com/metal-automata/conditionorc/blob/main/sample/serverenroll.md
 // @Param uuid path string true "Server ID"
 // @Accept json
 // @Produce json
@@ -295,7 +295,7 @@ func (r *Routes) serverProvision(c *gin.Context) (int, *v1types.ServerResponse) 
 // @Summary Firmware Install
 // @Tag Conditions
 // @Description Installs firmware on a device and validates with a subsequent inventory
-// @Description Sample firmwareInstall payload, response: https://github.com/metal-toolbox/conditionorc/blob/main/sample/firmwareInstall.md
+// @Description Sample firmwareInstall payload, response: https://github.com/metal-automata/conditionorc/blob/main/sample/firmwareInstall.md
 // @Param uuid path string true "Server ID"
 // @Param data body rctypes.FirmwareInstallTaskParameters true "firmware install options"
 // @Accept json

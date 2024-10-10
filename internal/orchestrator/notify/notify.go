@@ -1,7 +1,7 @@
 package notify
 
 import (
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/types"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/conditions/types"
 	"github.com/sirupsen/logrus"
 )
 

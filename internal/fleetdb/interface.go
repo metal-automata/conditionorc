@@ -7,15 +7,15 @@ import (
 	"github.com/coreos/go-oidc"
 	"github.com/google/uuid"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/metal-toolbox/conditionorc/internal/app"
-	"github.com/metal-toolbox/conditionorc/internal/model"
+	"github.com/metal-automata/conditionorc/internal/app"
+	"github.com/metal-automata/conditionorc/internal/model"
 	"github.com/sirupsen/logrus"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/clientcredentials"
 
-	fleetdbapi "github.com/metal-toolbox/fleetdb/pkg/api/v1"
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	fleetdbapi "github.com/metal-automata/fleetdb/pkg/api/v1"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 // FleetDB handles traffics between conditionorc and fleet db.

@@ -9,16 +9,16 @@ import (
 
 	"github.com/equinix-labs/otel-init-go/otelinit"
 
-	"github.com/metal-toolbox/conditionorc/internal/app"
-	"github.com/metal-toolbox/conditionorc/internal/fleetdb"
-	"github.com/metal-toolbox/conditionorc/internal/metrics"
-	"github.com/metal-toolbox/conditionorc/internal/model"
-	"github.com/metal-toolbox/conditionorc/internal/orchestrator"
-	"github.com/metal-toolbox/conditionorc/internal/orchestrator/notify"
-	"github.com/metal-toolbox/conditionorc/internal/server"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	"github.com/metal-toolbox/conditionorc/internal/version"
-	"github.com/metal-toolbox/rivets/events"
+	"github.com/metal-automata/conditionorc/internal/app"
+	"github.com/metal-automata/conditionorc/internal/fleetdb"
+	"github.com/metal-automata/conditionorc/internal/metrics"
+	"github.com/metal-automata/conditionorc/internal/model"
+	"github.com/metal-automata/conditionorc/internal/orchestrator"
+	"github.com/metal-automata/conditionorc/internal/orchestrator/notify"
+	"github.com/metal-automata/conditionorc/internal/server"
+	"github.com/metal-automata/conditionorc/internal/store"
+	"github.com/metal-automata/conditionorc/internal/version"
+	"github.com/metal-automata/rivets/events"
 	"github.com/spf13/cobra"
 )
 

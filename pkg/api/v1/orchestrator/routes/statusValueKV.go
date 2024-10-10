@@ -5,11 +5,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/status"
+	"github.com/metal-automata/conditionorc/internal/status"
 	"github.com/nats-io/nats.go"
 	"github.com/pkg/errors"
 
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 type statusValueKV interface {

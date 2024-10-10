@@ -7,15 +7,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	rctypes "github.com/metal-automata/rivets/condition"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 
-	"github.com/metal-toolbox/conditionorc/internal/metrics"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/types"
+	"github.com/metal-automata/conditionorc/internal/metrics"
+	"github.com/metal-automata/conditionorc/internal/store"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/conditions/types"
 )
 
 type FirmwareValidationRequest struct {

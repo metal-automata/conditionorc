@@ -5,13 +5,13 @@ package fleetdb
 import (
 	context "context"
 
-	condition "github.com/metal-toolbox/rivets/condition"
+	condition "github.com/metal-automata/rivets/condition"
 
-	fleetdbapi "github.com/metal-toolbox/fleetdb/pkg/api/v1"
+	fleetdbapi "github.com/metal-automata/fleetdb/pkg/api/v1"
 
 	mock "github.com/stretchr/testify/mock"
 
-	model "github.com/metal-toolbox/conditionorc/internal/model"
+	model "github.com/metal-automata/conditionorc/internal/model"
 
 	uuid "github.com/google/uuid"
 )

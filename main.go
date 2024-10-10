@@ -1,5 +1,6 @@
 /*
-Copyright © 2023 Metal Toolbox Authors <EMAIL ADDRESS>
+Copyright © 2023-2024 Metal Toolbox Authors <EMAIL ADDRESS>
+Copyright 2024 Metal Automata Authors https://github.com/metal-automata
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/metal-toolbox/conditionorc/cmd"
+import "github.com/metal-automata/conditionorc/cmd"
 
 // @BasePath /api/v1
 // @title Condition orchestrator API

@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	rctypes "github.com/metal-toolbox/rivets/condition"
-	"github.com/metal-toolbox/rivets/events"
+	rctypes "github.com/metal-automata/rivets/condition"
+	"github.com/metal-automata/rivets/events"
 	"github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"

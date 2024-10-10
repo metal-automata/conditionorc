@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	rctypes "github.com/metal-automata/rivets/condition"
 	"github.com/pkg/errors"
 
-	"github.com/metal-toolbox/rivets/events/registry"
+	"github.com/metal-automata/rivets/events/registry"
 )
 
 var (

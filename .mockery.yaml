@@ -1,21 +1,21 @@
 testonly: False
 unroll-variadic: True
 packages:
-  github.com/metal-toolbox/conditionorc/internal/store:
+  github.com/metal-automata/conditionorc/internal/store:
     config:
       dir: internal/store
       fileName: "mock_{{.InterfaceName | firstLower}}.go"
       inpackage: True
     interfaces:
       Repository:
-  github.com/metal-toolbox/conditionorc/internal/fleetdb:
+  github.com/metal-automata/conditionorc/internal/fleetdb:
     config:
       dir: internal/fleetdb
       fileName: "mock_{{.InterfaceName | firstLower}}.go"
       inpackage: True
     interfaces:
       FleetDB:
-  github.com/metal-toolbox/conditionorc/pkg/api/v1/orchestrator/routes:
+  github.com/metal-automata/conditionorc/pkg/api/v1/orchestrator/routes:
     config:
       dir: pkg/api/v1/orchestrator/routes
       fileName: "mock_{{.InterfaceName | firstLower}}.go"
@@ -23,7 +23,7 @@ packages:
     interfaces:
       statusValueKV:
       taskKV:
-  github.com/metal-toolbox/conditionorc/pkg/api/v1/orchestrator/client:
+  github.com/metal-automata/conditionorc/pkg/api/v1/orchestrator/client:
     config:
       dir: pkg/api/v1/orchestrator/client
       fileName: "mock_{{.InterfaceName | lower }}.go"

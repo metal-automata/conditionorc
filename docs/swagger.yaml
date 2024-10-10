@@ -1,5 +1,74 @@
 basePath: /api/v1
 definitions:
+  common.Capability:
+    properties:
+      Description:
+        type: string
+      Enabled:
+        type: boolean
+      Name:
+        type: string
+    type: object
+  common.Firmware:
+    properties:
+      available:
+        type: string
+      installed:
+        type: string
+      metadata:
+        additionalProperties:
+          type: string
+        type: object
+      previous:
+        items:
+          $ref: '#/definitions/common.Firmware'
+        type: array
+      software_id:
+        type: string
+    type: object
+  common.Status:
+    properties:
+      health:
+        type: string
+      post_code:
+        type: integer
+      post_code_status:
+        type: string
+      state:
+        type: string
+    type: object
+  condition.BiosControlAction:
+    enum:
+    - reset_config
+    - set_config
+    type: string
+    x-enum-varnames:
+    - ResetConfig
+    - SetConfig
+  condition.BiosControlTaskParameters:
+    properties:
+      action:
+        allOf:
+        - $ref: '#/definitions/condition.BiosControlAction'
+        description: |-
+          The bios control action to be performed
+
+          Required: true
+      asset_id:
+        description: |-
+          Identifier for the Asset in the Asset store.
+
+          Required: true
+        type: string
+      bios_config_url:
+        allOf:
+        - $ref: '#/definitions/url.URL'
+        description: |-
+          The URL for the bios configuration settings file.
+          Needed for BiosControlAction.SetConfig
+
+          Required: false
+    type: object
   condition.Condition:
     properties:
       client:
@@ -32,6 +101,9 @@ definitions:
         items:
           type: integer
         type: array
+      spanID:
+        description: SpanID enables tracking a Condition and any associated Conditions
+        type: string
       state:
         allOf:
         - $ref: '#/definitions/condition.State'
@@ -46,6 +118,9 @@ definitions:
       target:
         description: Target is the identifier for the target server this Condition
           is applicable for.
+        type: string
+      traceID:
+        description: TraceID enables tracking a Condition and any associated Conditions
         type: string
       updatedAt:
         description: UpdatedAt is when this object was last updated.
@@ -85,10 +160,14 @@ definitions:
         type: string
       id:
         type: string
+      install_inband:
+        type: boolean
       models:
         items:
           type: string
         type: array
+      oem:
+        type: boolean
       vendor:
         type: string
       version:
@@ -128,26 +207,26 @@ definitions:
     type: object
   condition.Kind:
     enum:
+    - inventory
+    - virtualMediaMount
+    - serverControl
+    - firmwareInstall
+    - firmwareInstallInband
+    - biosControl
     - broker
     - broker.acquireServer
     - broker.releaseServer
-    - virtualMediaMount
-    - firmwareInstall
-    - firmwareInstallInband
-    - inventory
-    - serverControl
-    - biosControl
     type: string
     x-enum-varnames:
+    - Inventory
+    - VirtualMediaMount
+    - ServerControl
+    - FirmwareInstall
+    - FirmwareInstallInband
+    - BiosControl
     - Broker
     - BrokerAcquireServer
     - BrokerReleaseServer
-    - VirtualMediaMount
-    - FirmwareInstall
-    - FirmwareInstallInband
-    - Inventory
-    - ServerControl
-    - BiosControl
   condition.State:
     enum:
     - pending
@@ -160,7 +239,74 @@ definitions:
     - Active
     - Failed
     - Succeeded
-  github_com_metal-toolbox_conditionorc_pkg_api_v1_conditions_types.ServerResponse:
+  condition.StatusMsg:
+    properties:
+      msg:
+        type: string
+      ts:
+        type: string
+    type: object
+  condition.StatusRecord:
+    properties:
+      records:
+        items:
+          $ref: '#/definitions/condition.StatusMsg'
+        type: array
+    type: object
+  condition.Task-any-any:
+    properties:
+      completed_at:
+        type: string
+      created_at:
+        type: string
+      data:
+        description: Data holds Condition Task specific data
+      facility_code:
+        description: FacilityCode identifies the facility this task is to be executed
+          in.
+        type: string
+      fault:
+        allOf:
+        - $ref: '#/definitions/condition.Fault'
+        description: |-
+          Fault is a field to inject failures into a flasher task execution,
+          this is set from the Condition only when the worker is run with fault-injection enabled.
+      id:
+        description: Task unique identifier, this is set to the Condition identifier.
+        type: string
+      kind:
+        allOf:
+        - $ref: '#/definitions/condition.Kind'
+        description: Kind is the type of Condition this Task is derived from
+      parameters:
+        description: Parameters holds Condition specific parameters for this task
+      server:
+        allOf:
+        - $ref: '#/definitions/types.Server'
+        description: Server holds attributes about target server this task is for.
+      spanID:
+        type: string
+      state:
+        allOf:
+        - $ref: '#/definitions/condition.State'
+        description: state is the state of the install
+      status:
+        allOf:
+        - $ref: '#/definitions/condition.StatusRecord'
+        description: status holds informational data on the state
+      task_version:
+        description: StructVersion indicates the Task object version and is used to
+          determine Task  compatibility.
+        type: string
+      traceID:
+        type: string
+      updated_at:
+        type: string
+      worker_id:
+        description: WorkerID is the identifier for the worker executing this task.
+        type: string
+    type: object
+  github_com_metal-automata_conditionorc_pkg_api_v1_conditions_types.ServerResponse:
     properties:
       message:
         type: string
@@ -168,6 +314,17 @@ definitions:
         $ref: '#/definitions/types.ConditionsResponse'
       statusCode:
         type: integer
+    type: object
+  github_com_metal-automata_conditionorc_pkg_api_v1_orchestrator_types.ServerResponse:
+    properties:
+      condition:
+        $ref: '#/definitions/condition.Condition'
+      message:
+        type: string
+      statusCode:
+        type: integer
+      task:
+        $ref: '#/definitions/condition.Task-any-any'
     type: object
   routes.FirmwareValidationRequest:
     properties:
@@ -179,6 +336,108 @@ definitions:
     - firmware_set_id
     - server_id
     type: object
+  types.Component:
+    properties:
+      attributes:
+        $ref: '#/definitions/types.ComponentAttributes'
+      firmware:
+        $ref: '#/definitions/common.Firmware'
+      id:
+        type: string
+      model:
+        type: string
+      name:
+        type: string
+      serial:
+        type: string
+      status:
+        $ref: '#/definitions/common.Status'
+      updated:
+        type: string
+      vendor:
+        type: string
+    type: object
+  types.ComponentAttributes:
+    properties:
+      architecture:
+        type: string
+      block_size_bytes:
+        type: integer
+      bus_info:
+        type: string
+      capabilities:
+        items:
+          $ref: '#/definitions/common.Capability'
+        type: array
+      capable_speed_gbps:
+        type: integer
+      capacity_bytes:
+        type: integer
+      chassis_type:
+        type: string
+      clock_speed_hz:
+        type: integer
+      cores:
+        type: integer
+      description:
+        type: string
+      drive_type:
+        type: string
+      form_factor:
+        type: string
+      id:
+        type: string
+      interface_type:
+        type: string
+      macaddress:
+        type: string
+      metadata:
+        additionalProperties:
+          type: string
+        type: object
+      negotiated_speed_gbps:
+        type: integer
+      oem:
+        type: boolean
+      oem_id:
+        type: string
+      part_number:
+        type: string
+      physid:
+        type: string
+      power_capacity_watts:
+        type: integer
+      product_name:
+        type: string
+      protocol:
+        type: string
+      size_bytes:
+        type: integer
+      slot:
+        type: string
+      smart_errors:
+        items:
+          type: string
+        type: array
+      smart_status:
+        type: string
+      speed_bits:
+        type: integer
+      speed_gbps:
+        type: integer
+      storage_controller:
+        type: string
+      supported_controller_protocol:
+        type: string
+      supported_device_protocol:
+        type: string
+      supported_raid_types:
+        type: string
+      threads:
+        type: integer
+      wwn:
+        type: string
+    type: object
   types.ConditionsResponse:
     properties:
       conditions:
@@ -189,6 +448,77 @@ definitions:
         type: string
       state:
         $ref: '#/definitions/condition.State'
+    type: object
+  types.Server:
+    properties:
+      bios_cfg:
+        additionalProperties:
+          type: string
+        type: object
+      bmc_address:
+        type: string
+      bmc_password:
+        type: string
+      bmc_user:
+        type: string
+      components:
+        items:
+          $ref: '#/definitions/types.Component'
+        type: array
+      facility:
+        type: string
+      id:
+        type: string
+      model:
+        type: string
+      name:
+        type: string
+      serial:
+        type: string
+      status:
+        type: string
+      updated:
+        type: string
+      vendor:
+        type: string
+    type: object
+  url.URL:
+    properties:
+      forceQuery:
+        description: append a query ('?') even if RawQuery is empty
+        type: boolean
+      fragment:
+        description: fragment for references, without '#'
+        type: string
+      host:
+        description: host or host:port (see Hostname and Port methods)
+        type: string
+      omitHost:
+        description: do not emit empty host (authority)
+        type: boolean
+      opaque:
+        description: encoded opaque data
+        type: string
+      path:
+        description: path (relative paths may omit leading slash)
+        type: string
+      rawFragment:
+        description: encoded fragment hint (see EscapedFragment method)
+        type: string
+      rawPath:
+        description: encoded path hint (see EscapedPath method)
+        type: string
+      rawQuery:
+        description: encoded query values, without '?'
+        type: string
+      scheme:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/url.Userinfo'
+        description: username and password information
+    type: object
+  url.Userinfo:
     type: object
 info:
   contact: {}
@@ -202,7 +532,7 @@ paths:
       description: |-
         Creates a server record in FleetDB and schedules an inventory condition on the device.
         It will create a new server ID if UUID is not provided.
-        Sample server enroll request and response: https://github.com/metal-toolbox/conditionorc/blob/main/sample/serverenroll.md
+        Sample server enroll request and response: https://github.com/metal-automata/conditionorc/blob/main/sample/serverenroll.md
       parameters:
       - description: Server ID
         in: path
@@ -215,7 +545,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_metal-toolbox_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
       summary: Server Enroll
   /serverProvision:
     post:
@@ -228,13 +558,13 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_metal-toolbox_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
       summary: Server Provision
   /servers/{uuid}:
     delete:
       description: |-
         Delete a server from FleetDB
-        Sample server delete request and response: https://github.com/metal-toolbox/conditionorc/blob/main/sample/serverenroll.md
+        Sample server delete request and response: https://github.com/metal-automata/conditionorc/blob/main/sample/serverenroll.md
       parameters:
       - description: Server ID
         in: path
@@ -245,15 +575,39 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_metal-toolbox_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
       summary: Server Delete
-  /servers/{uuid}/condition/{conditionKind}:
+  /servers/{uuid}/biosControl:
     post:
       consumes:
       - application/json
-      description: |-
-        Creates a condition on a server
-        Sample firmwareInstall payload, response: https://github.com/metal-toolbox/conditionorc/blob/main/sample/firmwareInstall.md
+      description: Controls the BIOS of the server
+      parameters:
+      - description: Server ID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: bios control options
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/condition.BiosControlTaskParameters'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
+      summary: Bios Control
+  /servers/{uuid}/condition:
+    get:
+      consumes:
+      - application/json
+      description: Returns the active/pending Condition for the serverID.
+      operationId: conditionGet
       parameters:
       - description: Server ID
         in: path
@@ -271,7 +625,125 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_metal-toolbox_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_orchestrator_types.ServerResponse'
+      summary: ConditionGet
+  /servers/{uuid}/condition-status/{conditionKind}/{conditionID}:
+    put:
+      consumes:
+      - application/json
+      description: Publishes an update to the Condition StatusValue KV
+      operationId: conditionStatusUpdate
+      parameters:
+      - description: Server ID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Condition Kind
+        in: path
+        name: conditionKind
+        required: true
+        type: string
+      - description: Condition ID
+        in: path
+        name: conditionID
+        required: true
+        type: string
+      - description: Only update timestamp in the StatusValue entry
+        in: query
+        name: ts_update
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_orchestrator_types.ServerResponse'
+      summary: ConditionStatusUpdate
+  /servers/{uuid}/condition-task/{conditionKind}:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Queries a *rivets.Task object from KV for a condition
+        Controllers will not have always know the taskID and so this enables querying
+        the active Task object using the serverID, conditionKind parameters.
+      operationId: taskQuery
+      parameters:
+      - description: Server ID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Condition Kind
+        in: path
+        name: conditionKind
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_orchestrator_types.ServerResponse'
+      summary: taskQuery returns the active/pending condition for a serverID
+  /servers/{uuid}/condition-task/{conditionKind}/{conditionID}:
+    post:
+      consumes:
+      - application/json
+      description: Publishes a *rivets.Task object to the KV for a condition
+      operationId: taskPublish
+      parameters:
+      - description: Server ID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Condition Kind
+        in: path
+        name: conditionKind
+        required: true
+        type: string
+      - description: Condition ID
+        in: path
+        name: conditionID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_orchestrator_types.ServerResponse'
+      summary: taskPublish
+  /servers/{uuid}/condition/{conditionKind}:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Creates a condition on a server
+        Sample firmwareInstall payload, response: https://github.com/metal-automata/conditionorc/blob/main/sample/firmwareInstall.md
+      parameters:
+      - description: Server ID
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Condition Kind
+        in: path
+        name: conditionKind
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
       summary: Condition Create
   /servers/{uuid}/firmwareInstall:
     post:
@@ -279,7 +751,7 @@ paths:
       - application/json
       description: |-
         Installs firmware on a device and validates with a subsequent inventory
-        Sample firmwareInstall payload, response: https://github.com/metal-toolbox/conditionorc/blob/main/sample/firmwareInstall.md
+        Sample firmwareInstall payload, response: https://github.com/metal-automata/conditionorc/blob/main/sample/firmwareInstall.md
       parameters:
       - description: Server ID
         in: path
@@ -298,7 +770,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_metal-toolbox_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
       summary: Firmware Install
   /servers/{uuid}/status:
     get:
@@ -318,7 +790,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_metal-toolbox_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
       summary: Condition Status
   /validateFirmware:
     post:
@@ -339,6 +811,6 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_metal-toolbox_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
+            $ref: '#/definitions/github_com_metal-automata_conditionorc_pkg_api_v1_conditions_types.ServerResponse'
       summary: Validate Firmware
 swagger: "2.0"

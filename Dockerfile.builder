@@ -1,10 +1,10 @@
 FROM golang:1.22-alpine3.20 AS build
 
-WORKDIR /go/src/github.com/metal-toolbox/conditionorc
+WORKDIR /go/src/github.com/metal-automata/conditionorc
 COPY go.mod go.sum ./
 RUN go mod download
 
-ARG LDFLAG_LOCATION=github.com/metal-toolbox/conditionorc/internal/version
+ARG LDFLAG_LOCATION=github.com/metal-automata/conditionorc/internal/version
 ARG GIT_COMMIT
 ARG GIT_BRANCH
 ARG GIT_SUMMARY

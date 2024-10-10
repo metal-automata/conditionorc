@@ -1,7 +1,7 @@
 package types
 
 import (
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 type ServerResponse struct {

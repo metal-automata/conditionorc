@@ -5,15 +5,15 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/status"
-	"github.com/metal-toolbox/rivets/events"
-	"github.com/metal-toolbox/rivets/events/registry"
+	"github.com/metal-automata/conditionorc/internal/status"
+	"github.com/metal-automata/rivets/events"
+	"github.com/metal-automata/rivets/events/registry"
 	"github.com/nats-io/nats.go"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 func TestStatusValuePublish(t *testing.T) {

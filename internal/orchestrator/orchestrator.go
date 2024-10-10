@@ -4,15 +4,15 @@ import (
 	"context"
 	"sync"
 
-	"github.com/metal-toolbox/conditionorc/internal/fleetdb"
-	"github.com/metal-toolbox/conditionorc/internal/orchestrator/notify"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	"github.com/metal-toolbox/conditionorc/internal/version"
-	"github.com/metal-toolbox/rivets/events"
+	"github.com/metal-automata/conditionorc/internal/fleetdb"
+	"github.com/metal-automata/conditionorc/internal/orchestrator/notify"
+	"github.com/metal-automata/conditionorc/internal/store"
+	"github.com/metal-automata/conditionorc/internal/version"
+	"github.com/metal-automata/rivets/events"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 var (

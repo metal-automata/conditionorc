@@ -11,9 +11,9 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/orchestrator/types"
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	"github.com/metal-automata/conditionorc/internal/store"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/orchestrator/types"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 var (

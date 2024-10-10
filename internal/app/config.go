@@ -6,13 +6,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/metal-toolbox/conditionorc/internal/model"
-	"github.com/metal-toolbox/conditionorc/internal/orchestrator/notify"
-	"github.com/metal-toolbox/rivets/events"
-	"github.com/metal-toolbox/rivets/ginjwt"
+	"github.com/metal-automata/conditionorc/internal/model"
+	"github.com/metal-automata/conditionorc/internal/orchestrator/notify"
+	"github.com/metal-automata/rivets/events"
+	"github.com/metal-automata/rivets/ginjwt"
 	"github.com/pkg/errors"
 
-	rctypes "github.com/metal-toolbox/rivets/condition"
+	rctypes "github.com/metal-automata/rivets/condition"
 )
 
 var ErrConfig = errors.New("configuration error")
@@ -63,7 +63,7 @@ type Configuration struct {
 	Notifications notify.Configuration `mapstructure:"notifications"`
 }
 
-// https://github.com/metal-toolbox/hollow-serverservice
+// https://github.com/metal-automata/hollow-serverservice
 type FleetDBAPIOptions struct {
 	EndpointURL          *url.URL
 	Endpoint             string   `mapstructure:"endpoint"`

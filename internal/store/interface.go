@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/app"
-	"github.com/metal-toolbox/conditionorc/internal/model"
-	rctypes "github.com/metal-toolbox/rivets/condition"
-	"github.com/metal-toolbox/rivets/events"
+	"github.com/metal-automata/conditionorc/internal/app"
+	"github.com/metal-automata/conditionorc/internal/model"
+	rctypes "github.com/metal-automata/rivets/condition"
+	"github.com/metal-automata/rivets/events"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"

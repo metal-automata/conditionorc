@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	runtime "github.com/banzaicloud/logrus-runtime-formatter"
-	"github.com/metal-toolbox/conditionorc/internal/model"
+	"github.com/metal-automata/conditionorc/internal/model"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )

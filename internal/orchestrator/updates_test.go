@@ -12,13 +12,13 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/metal-toolbox/conditionorc/internal/app"
-	"github.com/metal-toolbox/conditionorc/internal/model"
-	"github.com/metal-toolbox/conditionorc/internal/status"
-	"github.com/metal-toolbox/conditionorc/internal/store"
-	"github.com/metal-toolbox/rivets/events"
-	"github.com/metal-toolbox/rivets/events/pkg/kv"
-	"github.com/metal-toolbox/rivets/events/registry"
+	"github.com/metal-automata/conditionorc/internal/app"
+	"github.com/metal-automata/conditionorc/internal/model"
+	"github.com/metal-automata/conditionorc/internal/status"
+	"github.com/metal-automata/conditionorc/internal/store"
+	"github.com/metal-automata/rivets/events"
+	"github.com/metal-automata/rivets/events/pkg/kv"
+	"github.com/metal-automata/rivets/events/registry"
 	"github.com/nats-io/nats-server/v2/server"
 	srvtest "github.com/nats-io/nats-server/v2/test"
 	"github.com/nats-io/nats.go"
@@ -28,9 +28,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
 
-	v1types "github.com/metal-toolbox/conditionorc/pkg/api/v1/conditions/types"
-	rctypes "github.com/metal-toolbox/rivets/condition"
-	eventsm "github.com/metal-toolbox/rivets/events"
+	v1types "github.com/metal-automata/conditionorc/pkg/api/v1/conditions/types"
+	rctypes "github.com/metal-automata/rivets/condition"
+	eventsm "github.com/metal-automata/rivets/events"
 )
 
 var (
