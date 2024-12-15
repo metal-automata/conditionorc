@@ -207,26 +207,26 @@ definitions:
     type: object
   condition.Kind:
     enum:
-    - inventory
-    - virtualMediaMount
     - serverControl
-    - firmwareInstall
-    - firmwareInstallInband
     - biosControl
     - broker
     - broker.acquireServer
     - broker.releaseServer
+    - inventory
+    - firmwareInstall
+    - firmwareInstallInband
+    - virtualMediaMount
     type: string
     x-enum-varnames:
-    - Inventory
-    - VirtualMediaMount
     - ServerControl
-    - FirmwareInstall
-    - FirmwareInstallInband
     - BiosControl
     - Broker
     - BrokerAcquireServer
     - BrokerReleaseServer
+    - Inventory
+    - FirmwareInstall
+    - FirmwareInstallInband
+    - VirtualMediaMount
   condition.State:
     enum:
     - pending

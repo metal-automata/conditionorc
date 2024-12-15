@@ -120,9 +120,6 @@ func TestAddServer(t *testing.T) {
 	expectedInventoryParams := func(id string) string {
 		return fmt.Sprintf(`{"collect_bios_cfg":true,"collect_firmware_status":true,"inventory_method":"outofband","asset_id":"%v"}`, id)
 	}
-	nopRollback := func() error {
-		return nil
-	}
 	var generatedServerID uuid.UUID
 	testcases := []struct {
 		name              string
@@ -151,7 +148,7 @@ func TestAddServer(t *testing.T) {
 			mockFleetDBClient: func(f *fleetdb.MockFleetDB) {
 				// lookup for an existing condition
 				f.On("AddServer", mock.Anything, mockServerID, mockFacilityCode, mockIP, mockUser, mockPwd).
-					Return(nopRollback, nil). // no condition exists
+					Return(nil). // no condition exists
 					Once()
 			},
 			mockStream: func(r *eventsm.MockStream) {
@@ -206,7 +203,7 @@ func TestAddServer(t *testing.T) {
 			mockFleetDBClient: func(f *fleetdb.MockFleetDB) {
 				// lookup for an existing condition
 				f.On("AddServer", mock.Anything, mockServerID, mockFacilityCode, mockIP, "", mockPwd).
-					Return(nopRollback, fleetdb.ErrBMCCredentials). // no condition exists
+					Return(fleetdb.ErrBMCCredentials). // no condition exists
 					Once()
 			},
 			mockStream: nil,
@@ -240,7 +237,7 @@ func TestAddServer(t *testing.T) {
 			mockFleetDBClient: func(f *fleetdb.MockFleetDB) {
 				// lookup for an existing condition
 				f.On("AddServer", mock.Anything, mockServerID, mockFacilityCode, mockIP, mockUser, "").
-					Return(nopRollback, fleetdb.ErrBMCCredentials). // no condition exists
+					Return(fleetdb.ErrBMCCredentials). // no condition exists
 					Once()
 			},
 			mockStream: nil,
@@ -291,9 +288,9 @@ func TestAddServer(t *testing.T) {
 			mockFleetDBClient: func(f *fleetdb.MockFleetDB) {
 				// lookup for an existing condition
 				f.On("AddServer", mock.Anything, mock.Anything, mockFacilityCode, mockIP, mockUser, mockPwd).
-					Return(func(ctx context.Context, serverID uuid.UUID, _, _, _, _ string) (func() error, error) {
+					Return(func(ctx context.Context, serverID uuid.UUID, _, _, _, _ string) error {
 						generatedServerID = serverID
-						return nopRollback, nil
+						return nil
 					}).
 					Once()
 			},
@@ -498,144 +495,6 @@ func TestDeleteServer(t *testing.T) {
 			server.ServeHTTP(recorder, tc.request(t))
 
 			tc.assertResponse(t, recorder)
-		})
-	}
-}
-
-// nolint:gocyclo // cyclomatic tests are cyclomatic
-func TestAddServerRollback(t *testing.T) {
-	repository, fleetDBClient, stream, server, err := setupTestServer(t)
-	if err != nil {
-		t.Fatal(err)
-	}
-	rollbackCallCounter := 0
-	rollback := func() error {
-		rollbackCallCounter += 1
-		return nil
-	}
-	mockServerID := uuid.New()
-	validParams := fmt.Sprintf(`{"facility":"%v","ip":"192.168.0.1","user":"foo","pwd":"bar"}`, mockServerID)
-	payload, err := json.Marshal(&v1types.ConditionCreate{Parameters: []byte(validParams)})
-	if err != nil {
-		t.Error()
-	}
-	requestFunc := func(t *testing.T) *http.Request {
-		url := fmt.Sprintf("/api/v1/serverEnroll/%v", mockServerID)
-		request, err := http.NewRequestWithContext(context.TODO(), http.MethodPost, url, bytes.NewReader(payload))
-		if err != nil {
-			t.Fatal(err)
-		}
-		return request
-	}
-	type mockError struct {
-		calledTime int
-		err        error
-	}
-	testcases := []struct {
-		name                 string
-		mockStoreCreateErr   mockError
-		mockFleetDBClientErr mockError
-		mockStreamErr        mockError
-		mockStoreUpdateErr   mockError
-		request              func(t *testing.T) *http.Request
-		assertResponse       func(t *testing.T, r *httptest.ResponseRecorder)
-		expectRollback       int
-	}{
-		{
-			name:                 "no error",
-			mockStoreCreateErr:   mockError{calledTime: 1, err: nil},
-			mockFleetDBClientErr: mockError{calledTime: 1, err: nil},
-			mockStreamErr:        mockError{calledTime: 1, err: nil},
-			mockStoreUpdateErr:   mockError{calledTime: 0, err: nil},
-			request:              requestFunc,
-			assertResponse: func(t *testing.T, r *httptest.ResponseRecorder) {
-				assert.Equal(t, http.StatusOK, r.Code)
-			},
-			expectRollback: 0,
-		},
-		{
-			name:                 "fleetdb error",
-			mockStoreCreateErr:   mockError{calledTime: 0, err: nil},
-			mockFleetDBClientErr: mockError{calledTime: 1, err: fmt.Errorf("fake fleetdb error")},
-			mockStreamErr:        mockError{calledTime: 0, err: nil},
-			mockStoreUpdateErr:   mockError{calledTime: 0, err: nil},
-			request:              requestFunc,
-			assertResponse: func(t *testing.T, r *httptest.ResponseRecorder) {
-				assert.Equal(t, http.StatusInternalServerError, r.Code)
-			},
-			expectRollback: 1,
-		},
-		{
-			name:                 "repository create error",
-			mockStoreCreateErr:   mockError{calledTime: 1, err: fmt.Errorf("fake repository create error")},
-			mockFleetDBClientErr: mockError{calledTime: 1, err: nil},
-			mockStreamErr:        mockError{calledTime: 0, err: nil},
-			mockStoreUpdateErr:   mockError{calledTime: 0, err: nil},
-			request:              requestFunc,
-			assertResponse: func(t *testing.T, r *httptest.ResponseRecorder) {
-				assert.Equal(t, http.StatusInternalServerError, r.Code)
-			},
-			expectRollback: 1,
-		},
-		{
-			name:                 "stream error",
-			mockStoreCreateErr:   mockError{calledTime: 1, err: nil},
-			mockFleetDBClientErr: mockError{calledTime: 1, err: nil},
-			mockStreamErr:        mockError{calledTime: 1, err: fmt.Errorf("fake stream error")},
-			mockStoreUpdateErr:   mockError{calledTime: 1, err: nil},
-			request:              requestFunc,
-			assertResponse: func(t *testing.T, r *httptest.ResponseRecorder) {
-				assert.Equal(t, http.StatusInternalServerError, r.Code)
-			},
-			expectRollback: 1,
-		},
-		{
-			name:                 "stream delete error",
-			mockStoreCreateErr:   mockError{calledTime: 1, err: nil},
-			mockFleetDBClientErr: mockError{calledTime: 1, err: nil},
-			mockStreamErr:        mockError{calledTime: 1, err: fmt.Errorf("fake stream error")},
-			mockStoreUpdateErr:   mockError{calledTime: 1, err: fmt.Errorf("fake repository delete error")},
-			request:              requestFunc,
-			assertResponse: func(t *testing.T, r *httptest.ResponseRecorder) {
-				assert.Equal(t, http.StatusInternalServerError, r.Code)
-			},
-			expectRollback: 1,
-		},
-	}
-	for _, tc := range testcases {
-		t.Run(tc.name, func(t *testing.T) {
-			rollbackCallCounter = 0
-			if tc.mockStoreCreateErr.calledTime > 0 {
-				repository.On("Create", mock.Anything, mock.Anything, mock.Anything, mock.Anything).
-					Return(tc.mockStoreCreateErr.err).
-					Times(tc.mockStoreCreateErr.calledTime)
-			}
-
-			if tc.mockFleetDBClientErr.calledTime > 0 {
-				fleetDBClient.On("AddServer", mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything, mock.Anything).
-					Return(rollback, tc.mockFleetDBClientErr.err).
-					Times(tc.mockFleetDBClientErr.calledTime)
-			}
-
-			if tc.mockStreamErr.calledTime > 0 {
-				stream.On("Publish", mock.Anything, mock.Anything, mock.Anything).
-					Return(tc.mockStreamErr.err).
-					Times(tc.mockStreamErr.calledTime)
-			}
-
-			if tc.mockStoreUpdateErr.calledTime > 0 {
-				repository.On("Update", mock.Anything, mock.Anything, mock.Anything).
-					Return(tc.mockStoreUpdateErr.err).
-					Times(tc.mockStoreUpdateErr.calledTime)
-			}
-
-			recorder := httptest.NewRecorder()
-			server.ServeHTTP(recorder, tc.request(t))
-			tc.assertResponse(t, recorder)
-
-			if rollbackCallCounter != tc.expectRollback {
-				t.Errorf("rollback called %v times, expect %v", rollbackCallCounter, tc.expectRollback)
-			}
 		})
 	}
 }

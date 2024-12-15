@@ -485,21 +485,14 @@ func TestServerEnroll(t *testing.T) {
 		return fmt.Sprintf(`{"collect_bios_cfg":true,"collect_firmware_status":true,"inventory_method":"outofband","asset_id":"%v"}`, id)
 	}
 
-	rollbackCounter := 0
-	rollback := func() error {
-		rollbackCounter += 1
-		return nil
-	}
-
 	testcases := []struct {
-		name                  string
-		payload               v1types.ConditionCreate
-		mockFleetDBClient     func(f *fleetdb.MockFleetDB)
-		mockStore             func(r *store.MockRepository)
-		expectedRollbackCount int
-		expectResponse        func() *v1types.ServerResponse
-		expectError           string
-		expectPublish         bool
+		name              string
+		payload           v1types.ConditionCreate
+		mockFleetDBClient func(f *fleetdb.MockFleetDB)
+		mockStore         func(r *store.MockRepository)
+		expectResponse    func() *v1types.ServerResponse
+		expectError       string
+		expectPublish     bool
 	}{
 		{
 			name:    "valid payload sent",
@@ -535,7 +528,6 @@ func TestServerEnroll(t *testing.T) {
 				}).
 					Once()
 			},
-			expectedRollbackCount: 0,
 			expectResponse: func() *v1types.ServerResponse {
 				return &v1types.ServerResponse{
 					StatusCode: 200,
@@ -546,11 +538,10 @@ func TestServerEnroll(t *testing.T) {
 			expectPublish: true,
 		},
 		{
-			name:                  "invalid payload - failed to send out",
-			payload:               v1types.ConditionCreate{Parameters: []byte("not json")},
-			mockFleetDBClient:     func(r *fleetdb.MockFleetDB) {},
-			mockStore:             func(r *store.MockRepository) {},
-			expectedRollbackCount: 0,
+			name:              "invalid payload - failed to send out",
+			payload:           v1types.ConditionCreate{Parameters: []byte("not json")},
+			mockFleetDBClient: func(r *fleetdb.MockFleetDB) {},
+			mockStore:         func(r *store.MockRepository) {},
 			expectResponse: func() *v1types.ServerResponse {
 				return nil
 			},
@@ -570,15 +561,14 @@ func TestServerEnroll(t *testing.T) {
 					"",
 					"mock-pwd",
 				).
-					Return(rollback, fleetdb.ErrBMCCredentials).
+					Return(fleetdb.ErrBMCCredentials).
 					Once()
 			},
-			mockStore:             func(r *store.MockRepository) {},
-			expectedRollbackCount: 1,
+			mockStore: func(r *store.MockRepository) {},
 			expectResponse: func() *v1types.ServerResponse {
 				return &v1types.ServerResponse{
 					StatusCode: 500,
-					Message:    "add server: invalid bmc credentials. missing user or passwordserver rollback err: <nil>",
+					Message:    "add server error: invalid bmc credentials. missing user or password",
 				}
 			},
 			expectError:   "",
@@ -606,11 +596,6 @@ func TestServerEnroll(t *testing.T) {
 					mock.Anything,
 				).Return(nil).Times(1)
 			}
-
-			defer func() {
-				require.Equal(t, tc.expectedRollbackCount, rollbackCounter, "rollback called incorrectly")
-				rollbackCounter = 0
-			}()
 
 			got, err := tester.client.ServerEnroll(context.TODO(), serverID.String(), tc.payload)
 			if tc.expectError != "" {
@@ -647,12 +632,6 @@ func TestServerEnrollEmptyUUID(t *testing.T) {
 		return fmt.Sprintf(`{"collect_bios_cfg":true,"collect_firmware_status":true,"inventory_method":"outofband","asset_id":"%v"}`, id)
 	}
 
-	rollbackCounter := 0
-	rollback := func() error {
-		rollbackCounter += 1
-		return nil
-	}
-
 	tester.fleetDB.On("AddServer",
 		mock.Anything,
 		mock.Anything,
@@ -660,7 +639,7 @@ func TestServerEnrollEmptyUUID(t *testing.T) {
 		"mock-ip",
 		"mock-user",
 		"mock-pwd").
-		Return(rollback, nil).
+		Return(nil).
 		Once()
 
 	tester.repository.On("Create",
@@ -688,7 +667,6 @@ func TestServerEnrollEmptyUUID(t *testing.T) {
 		t.Error(err)
 	}
 	require.Equal(t, http.StatusOK, got.StatusCode, "bad status code")
-	require.Equal(t, 0, rollbackCounter, "rollback called incorrectly")
 }
 
 func TestServerDelete(t *testing.T) {

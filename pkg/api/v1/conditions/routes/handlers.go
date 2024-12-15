@@ -236,16 +236,15 @@ func (r *Routes) serverEnroll(c *gin.Context) (int, *v1types.ServerResponse) {
 	}
 
 	// Creates a server record in FleetDB.
-	rollback, err := r.fleetDBClient.AddServer(c.Request.Context(), serverID, params.Facility, params.IP, params.Username, params.Password)
-	if err != nil {
-		rollbackErr := rollback()
-		if strings.Contains(err.Error(), badRequestErrMsg) {
+	errAdd := r.fleetDBClient.AddServer(c.Request.Context(), serverID, params.Facility, params.IP, params.Username, params.Password)
+	if errAdd != nil {
+		if strings.Contains(errAdd.Error(), badRequestErrMsg) {
 			return http.StatusBadRequest, &v1types.ServerResponse{
-				Message: "add server: " + err.Error() + fmt.Sprintf("server rollback err: %v", rollbackErr),
+				Message: "add server error: " + errAdd.Error(),
 			}
 		}
 		return http.StatusInternalServerError, &v1types.ServerResponse{
-			Message: "add server: " + err.Error() + fmt.Sprintf("server rollback err: %v", rollbackErr),
+			Message: "add server error: " + errAdd.Error(),
 		}
 	}
 
@@ -255,21 +254,28 @@ func (r *Routes) serverEnroll(c *gin.Context) (int, *v1types.ServerResponse) {
 		CollectBiosCfg:        true,
 		CollectFirwmareStatus: true,
 	}
+
 	inventoryParams, err := json.Marshal(inventoryArgs)
 	if err != nil {
-		_ = rollback()
-		r.logger.WithError(err).Warning("bad condition inventoryParams serialize")
-		panic(err)
+		msg := "inventoryParams serialize error: "
+		r.logger.WithError(err).Warning(msg)
+
+		return http.StatusInternalServerError, &v1types.ServerResponse{
+			Message: msg + err.Error(),
+		}
 	}
+
 	conditionCreate.Parameters = inventoryParams
 	newCondition := conditionCreate.NewCondition(rctypes.Inventory, serverID)
 
-	st, resp := r.conditionCreate(otelCtx, newCondition, serverID, params.Facility)
-	if st != http.StatusOK {
-		rollbackErr := rollback()
-		resp.Message += fmt.Sprintf("server rollback err: %v", rollbackErr)
+	statusCode, resp := r.conditionCreate(otelCtx, newCondition, serverID, params.Facility)
+	if statusCode != http.StatusOK {
+		return http.StatusInternalServerError, &v1types.ServerResponse{
+			Message: "condition publish error: " + err.Error(),
+		}
 	}
-	return st, resp
+
+	return statusCode, resp
 }
 
 // @Summary Server Provision
