@@ -696,26 +696,26 @@ const docTemplate = `{
         "condition.Kind": {
             "type": "string",
             "enum": [
-                "inventory",
-                "virtualMediaMount",
                 "serverControl",
-                "firmwareInstall",
-                "firmwareInstallInband",
                 "biosControl",
                 "broker",
                 "broker.acquireServer",
-                "broker.releaseServer"
+                "broker.releaseServer",
+                "inventory",
+                "firmwareInstall",
+                "firmwareInstallInband",
+                "virtualMediaMount"
             ],
             "x-enum-varnames": [
-                "Inventory",
-                "VirtualMediaMount",
                 "ServerControl",
-                "FirmwareInstall",
-                "FirmwareInstallInband",
                 "BiosControl",
                 "Broker",
                 "BrokerAcquireServer",
-                "BrokerReleaseServer"
+                "BrokerReleaseServer",
+                "Inventory",
+                "FirmwareInstall",
+                "FirmwareInstallInband",
+                "VirtualMediaMount"
             ]
         },
         "condition.State": {

@@ -2,7 +2,6 @@ package fleetdb
 
 import (
 	"context"
-	"fmt"
 	"net/netip"
 	"strings"
 	"time"
@@ -17,23 +16,12 @@ import (
 
 	fleetdbapi "github.com/metal-automata/fleetdb/pkg/api/v1"
 	rctypes "github.com/metal-automata/rivets/condition"
-	rfleetdbapi "github.com/metal-automata/rivets/fleetdb"
-)
-
-const (
-	secretSlug = "bmc"
 )
 
 type fleetDBImpl struct {
 	config *app.FleetDBAPIOptions
 	client *fleetdbapi.Client
 	logger *logrus.Logger
-}
-
-type serverCreateStatus struct {
-	serverCreated     bool
-	credentialCreated bool
-	attributesCreated bool
 }
 
 var (
@@ -51,71 +39,33 @@ func fleetdbAPIError(operation string) {
 }
 
 // AddServer creates a server record in FleetDB
-func (s *fleetDBImpl) AddServer(ctx context.Context, serverID uuid.UUID, facilityCode, bmcAddr, bmcUser, bmcPass string) (func() error, error) {
-	var createStatus serverCreateStatus
-	cleanup := func() error {
-		if createStatus.serverCreated {
-			server := fleetdbapi.Server{UUID: serverID, Name: serverID.String(), FacilityCode: facilityCode}
-			_, err := s.client.Delete(ctx, server)
-			if err != nil {
-				s.logger.WithError(err).Warning("server enroll failed to rollback server")
-				return err
-			}
-		}
-
-		if createStatus.credentialCreated {
-			_, err := s.client.DeleteCredential(ctx, serverID, secretSlug)
-			if err != nil {
-				s.logger.WithError(err).Warning("server enroll failed to rollback credential")
-				return err
-			}
-		}
-
-		if createStatus.attributesCreated {
-			_, err := s.client.DeleteAttributes(ctx, serverID, rfleetdbapi.ServerAttributeNSBmcAddress)
-			if err != nil {
-				s.logger.WithError(err).Warning("server enroll failed to rollback attributes")
-				return err
-			}
-		}
-		return nil
-	}
+func (s *fleetDBImpl) AddServer(ctx context.Context, serverID uuid.UUID, facilityCode, bmcAddr, bmcUser, bmcPass string) error {
 	otelCtx, span := otel.Tracer(pkgName).Start(ctx, "FleetDB.AddServer")
 	defer span.End()
 
 	if bmcUser == "" || bmcPass == "" {
-		return cleanup, ErrBMCCredentials
+		return ErrBMCCredentials
 	}
 
-	addr, err := netip.ParseAddr(bmcAddr)
+	_, err := netip.ParseAddr(bmcAddr)
 	if err != nil {
-		return cleanup, err
+		return err
 	}
 
 	// Add server
-	server := fleetdbapi.Server{UUID: serverID, Name: serverID.String(), FacilityCode: facilityCode}
+	server := fleetdbapi.Server{
+		UUID:         serverID,
+		Name:         serverID.String(),
+		FacilityCode: facilityCode,
+		BMC: &fleetdbapi.ServerBMC{
+			Username:  bmcUser,
+			Password:  bmcPass,
+			IPAddress: bmcAddr,
+		},
+	}
+
 	_, _, err = s.client.Create(otelCtx, server)
-	if err != nil {
-		return cleanup, err
-	}
-	createStatus.serverCreated = true
-
-	// Add server BMC credential
-	_, err = s.client.SetCredential(otelCtx, serverID, secretSlug, bmcUser, bmcPass)
-	if err != nil {
-		return cleanup, err
-	}
-	createStatus.credentialCreated = true
-
-	// Add server BMC IP attribute
-	addrAttr := fmt.Sprintf(`{"address": %q}`, addr.String())
-	bmcIPAttr := fleetdbapi.Attributes{Namespace: rfleetdbapi.ServerAttributeNSBmcAddress, Data: []byte(addrAttr)}
-	_, err = s.client.CreateAttributes(otelCtx, serverID, bmcIPAttr)
-	if err != nil {
-		return cleanup, err
-	}
-	createStatus.attributesCreated = true
-	return cleanup, nil
+	return err
 }
 
 // GetServer returns the facility for the requested server id.
@@ -124,7 +74,7 @@ func (s *fleetDBImpl) GetServer(ctx context.Context, serverID uuid.UUID) (*model
 	defer span.End()
 
 	// list attributes on a server
-	obj, _, err := s.client.Get(otelCtx, serverID)
+	obj, _, err := s.client.GetServer(otelCtx, serverID, &fleetdbapi.ServerGetParams{IncludeBMC: true})
 	if err != nil {
 		if strings.Contains(err.Error(), "404") {
 			return nil, ErrServerNotFound

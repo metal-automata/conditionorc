@@ -30,33 +30,21 @@ func (_m *MockFleetDB) EXPECT() *MockFleetDB_Expecter {
 }
 
 // AddServer provides a mock function with given fields: ctx, serverID, facilityCode, bmcAddr, bmcUser, bmcPass
-func (_m *MockFleetDB) AddServer(ctx context.Context, serverID uuid.UUID, facilityCode string, bmcAddr string, bmcUser string, bmcPass string) (func() error, error) {
+func (_m *MockFleetDB) AddServer(ctx context.Context, serverID uuid.UUID, facilityCode string, bmcAddr string, bmcUser string, bmcPass string) error {
 	ret := _m.Called(ctx, serverID, facilityCode, bmcAddr, bmcUser, bmcPass)
 
 	if len(ret) == 0 {
 		panic("no return value specified for AddServer")
 	}
 
-	var r0 func() error
-	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, string, string, string, string) (func() error, error)); ok {
-		return rf(ctx, serverID, facilityCode, bmcAddr, bmcUser, bmcPass)
-	}
-	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, string, string, string, string) func() error); ok {
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, uuid.UUID, string, string, string, string) error); ok {
 		r0 = rf(ctx, serverID, facilityCode, bmcAddr, bmcUser, bmcPass)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(func() error)
-		}
+		r0 = ret.Error(0)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, uuid.UUID, string, string, string, string) error); ok {
-		r1 = rf(ctx, serverID, facilityCode, bmcAddr, bmcUser, bmcPass)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // MockFleetDB_AddServer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AddServer'
@@ -82,12 +70,12 @@ func (_c *MockFleetDB_AddServer_Call) Run(run func(ctx context.Context, serverID
 	return _c
 }
 
-func (_c *MockFleetDB_AddServer_Call) Return(_a0 func() error, _a1 error) *MockFleetDB_AddServer_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *MockFleetDB_AddServer_Call) Return(_a0 error) *MockFleetDB_AddServer_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *MockFleetDB_AddServer_Call) RunAndReturn(run func(context.Context, uuid.UUID, string, string, string, string) (func() error, error)) *MockFleetDB_AddServer_Call {
+func (_c *MockFleetDB_AddServer_Call) RunAndReturn(run func(context.Context, uuid.UUID, string, string, string, string) error) *MockFleetDB_AddServer_Call {
 	_c.Call.Return(run)
 	return _c
 }
