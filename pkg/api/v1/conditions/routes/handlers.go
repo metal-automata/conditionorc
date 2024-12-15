@@ -271,7 +271,7 @@ func (r *Routes) serverEnroll(c *gin.Context) (int, *v1types.ServerResponse) {
 	statusCode, resp := r.conditionCreate(otelCtx, newCondition, serverID, params.Facility)
 	if statusCode != http.StatusOK {
 		return http.StatusInternalServerError, &v1types.ServerResponse{
-			Message: "condition publish error: " + err.Error(),
+			Message: fmt.Sprintf("condition publish error, status code: %d", statusCode),
 		}
 	}
 

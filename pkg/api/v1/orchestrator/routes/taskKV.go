@@ -202,8 +202,8 @@ func (t *taskKVImpl) publish(
 		// clear stale task entry
 		if rctypes.StateIsComplete(currTask.State) ||
 			(time.Since(currTask.UpdatedAt) > rctypes.StaleThreshold && currTask.ID != task.ID) {
-			if err := t.kv.Delete(key); err != nil {
-				return errors.Wrap(errPublishTask, err.Error())
+			if errDelete := t.kv.Delete(key); errDelete != nil {
+				return errors.Wrap(errPublishTask, errDelete.Error())
 			}
 
 			return create()
