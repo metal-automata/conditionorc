@@ -22,7 +22,7 @@ import (
 // NOTE: when updating this interface, run make gen-store-mock to make sure the mocks are updated.
 type FleetDB interface {
 	// AddServer creates a server in fleet db.
-	AddServer(ctx context.Context, serverID uuid.UUID, facilityCode, bmcAddr, bmcUser, bmcPass string) (func() error, error)
+	AddServer(ctx context.Context, serverID uuid.UUID, facilityCode, bmcAddr, bmcUser, bmcPass string) error
 	// Get Server attributes.
 	// @serverID: required
 	GetServer(ctx context.Context, serverID uuid.UUID) (*model.Server, error)
