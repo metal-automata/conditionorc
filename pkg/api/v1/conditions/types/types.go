@@ -39,10 +39,12 @@ type ConditionCreate struct {
 
 // AddServerParams is the request payload to add a server to fleetdb.
 type AddServerParams struct {
-	Facility string `json:"facility"`
-	IP       string `json:"bmc-ip"`
-	Username string `json:"bmc-user"`
-	Password string `json:"bmc-pwd"`
+	Facility       string `json:"facility"`
+	IP             string `json:"bmc-ip"`
+	Username       string `json:"bmc-user"`
+	Password       string `json:"bmc-pwd"`
+	HardwareVendor string `json:"hardware-vendor"`
+	HardwareModel  string `json:"hardware-model"`
 }
 
 func (asp *AddServerParams) MustJSON() []byte {
