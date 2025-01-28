@@ -74,7 +74,7 @@ func (s *fleetDBImpl) GetServer(ctx context.Context, serverID uuid.UUID) (*model
 	defer span.End()
 
 	// list attributes on a server
-	obj, _, err := s.client.GetServer(otelCtx, serverID, &fleetdbapi.ServerGetParams{IncludeBMC: true})
+	obj, _, err := s.client.GetServer(otelCtx, serverID, &fleetdbapi.ServerQueryParams{IncludeBMC: true})
 	if err != nil {
 		if strings.Contains(err.Error(), "404") {
 			return nil, ErrServerNotFound
