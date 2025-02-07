@@ -197,30 +197,6 @@ func (a *App) envVarNatsOverrides() error {
 		a.Config.NatsOptions.Stream.Name = a.v.GetString("nats.stream.name")
 	}
 
-	if a.v.GetString("nats.consumer.name") != "" {
-		if a.Config.NatsOptions.Consumer == nil {
-			a.Config.NatsOptions.Consumer = &events.NatsConsumerOptions{}
-		}
-
-		a.Config.NatsOptions.Consumer.Name = a.v.GetString("nats.consumer.name")
-	}
-
-	if len(a.v.GetStringSlice("nats.consumer.subscribeSubjects")) != 0 {
-		a.Config.NatsOptions.Consumer.SubscribeSubjects = a.v.GetStringSlice("nats.consumer.subscribeSubjects")
-	}
-
-	if len(a.Config.NatsOptions.Consumer.SubscribeSubjects) == 0 {
-		return errors.New("missing parameter: nats.consumer.subscribeSubjects")
-	}
-
-	if a.v.GetString("nats.consumer.filterSubject") != "" {
-		a.Config.NatsOptions.Consumer.FilterSubject = a.v.GetString("nats.consumer.filterSubject")
-	}
-
-	if a.Config.NatsOptions.Consumer.FilterSubject == "" {
-		return errors.New("missing parameter: nats.consumer.filterSubject")
-	}
-
 	if a.v.GetDuration("nats.connect.timeout") != 0 {
 		a.Config.NatsOptions.ConnectTimeout = a.v.GetDuration("nats.connect.timeout")
 	}
